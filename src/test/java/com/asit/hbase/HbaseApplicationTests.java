@@ -8,6 +8,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -19,7 +20,17 @@ class HBaseApplicationTests {
     //测试创建表
     @Test
     public void testCreateTable() {
-        hbaseService.creatTable("test_base", Arrays.asList("a", "back"));
+        hbaseService.createTable("test_base",
+                Arrays.asList(new HashMap<String,String>(){{
+                    put("name","info1");
+                    put("versions", "3");
+                }},new HashMap<String,String>(){{
+                    put("name","info2");
+                    put("versions", "3");
+                }},new HashMap<String,String>(){{
+                    put("name","info3");
+                }})
+        );
     }
 
     //测试加入数据

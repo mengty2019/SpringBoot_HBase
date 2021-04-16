@@ -46,23 +46,26 @@ public class HBaseService {
      * @param columnFamily
      * @return 是否创建成功
      */
-    public boolean creatTable(String tableName, List<String> columnFamily) {
+    public boolean createTable(String tableName, List<Map<String,String>> columnFamily) {
         try {
             //列族column family
             List<ColumnFamilyDescriptor> cfDesc = new ArrayList<>(columnFamily.size());
             columnFamily.forEach(cf -> {
-                cfDesc.add(ColumnFamilyDescriptorBuilder.newBuilder(
-                        Bytes.toBytes(cf)).build());
+                ColumnFamilyDescriptorBuilder cfdb = ColumnFamilyDescriptorBuilder.newBuilder(Bytes.toBytes(cf.get("name")));
+                if(cf.containsKey("versions")){
+                    cfdb.setMaxVersions(Integer.parseInt(cf.get("versions")));
+                }
+                cfDesc.add(cfdb.build());
             });
             //表 table
             TableDescriptor tableDesc = TableDescriptorBuilder
                     .newBuilder(TableName.valueOf(tableName))
                     .setColumnFamilies(cfDesc).build();
             if (admin.tableExists(TableName.valueOf(tableName))) {
-                log.debug("table Exists!");
+                log.debug("表已经存在!");
             } else {
                 admin.createTable(tableDesc);
-                log.debug("create table Success!");
+                log.debug("表创建成功!");
             }
         } catch (IOException e) {
             log.error(MessageFormat.format("创建表{0}失败", tableName), e);
@@ -72,7 +75,6 @@ public class HBaseService {
         }
         return true;
     }
-
     /**
      * 查询所有表的表名
      *
