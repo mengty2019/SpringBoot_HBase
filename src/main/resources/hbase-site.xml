@@ -2,6 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
 <configuration>
+    <!--
 <property>
     <name>hbase.rootdir</name>
     <value>hdfs://172.18.20.30:9000/opt/hbase-2.0.1</value>
@@ -26,4 +27,5 @@
     <name>hbase.master.info.port</name>
     <value>16010</value>
 </property>
+    -->
 </configuration>
