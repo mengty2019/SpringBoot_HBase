@@ -1,6 +1,6 @@
-package com.springboot.hbase.utli;
+package com.asit.hbase.utli;
 
-import com.springboot.hbase.service.HBaseService;
+import com.asit.hbase.service.HBaseService;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

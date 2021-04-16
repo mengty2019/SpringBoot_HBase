@@ -1,4 +1,4 @@
-package com.springboot.hbase.service;
+package com.asit.hbase.service;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
