@@ -2,6 +2,7 @@ package com.asit.hbase;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.ColumnFamilyDescriptor;
@@ -86,10 +87,14 @@ public class HBaseTestAPI {
         return true;
     }
     public static void main(String[] args) {
+        Configuration conf = HBaseConfiguration.create();
+        /*
+        等同于上面的Configuration conf = HBaseConfiguration.create();
         Configuration conf = new Configuration();
         conf.set("hbase.zookeeper.quorum","vm121,vm122,vm123");
+        */
         HBaseTestAPI testAPI = new HBaseTestAPI(conf);
-        String tablename="stu22";
+        String tablename="stu11";
         if(!testAPI.isExistTable(tablename)){
             List<Map<String,String>> list = new ArrayList<>();
             list.add(new HashMap<String,String>(){{

@@ -1,4 +1,4 @@
-package com.asit.hbase.utli;
+package com.asit.hbase.config;
 
 import com.asit.hbase.service.HBaseService;
 import org.apache.hadoop.hbase.HBaseConfiguration;
