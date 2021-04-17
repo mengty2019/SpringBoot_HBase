@@ -1,0 +1,8 @@
+hbase:
+  zookeeper:
+    quorum: vm121,vm122,vm123
+    property:
+      clientPort: 2181
+zookeeper:
+  znode:
+    parent: /hbase

@@ -1,6 +1,9 @@
 package com.asit.hbase;
 
 import com.asit.hbase.service.HBaseService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,10 +16,17 @@ import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
+@Slf4j
 class HBaseApplicationTests {
     @Resource
     private HBaseService hbaseService;
+    //@Resource
+    //private HBaseTemplateService templateService;
 
+    @Test
+    public void getRow() {
+        //templateService.getListRowkeyData("test_base",Arrays.asList("1002"),"info1","name");
+    }
     //测试创建表
     @Test
     public void testCreateTable() {
@@ -52,12 +62,26 @@ class HBaseApplicationTests {
 
     //测试遍历全表
     @Test
-    public void testGetResultScanner() {
-        Map<String, Map<String, String>> result2 = hbaseService.getResultScanner("test_base");
-        System.out.println("-----遍历查询全表内容-----");
+    public void scanAllTable() {
+        Map<String, Map<String, String>> result2 = hbaseService.queryData("stu22",null);
+        log.info("-----遍历查询全表内容-----");
         result2.forEach((k, value) -> {
-            System.out.println(k + "--->" + value);
+            log.info(k + "--->" + value);
         });
     }
 
+    //测试遍历全表
+    @Test
+    public void queryData() {
+        Scan scan = new Scan();
+        //rowkey起始（包含）
+        scan.withStartRow(Bytes.toBytes("1001"));
+        //rowkey结止（包含）
+        scan.withStopRow(Bytes.toBytes("1002"),true);
+        Map<String, Map<String, String>> result2 = hbaseService.queryData("stu22",scan);
+        log.info("-----遍历查询全表内容-----");
+        result2.forEach((k, value) -> {
+            log.info(k + "--->" + value);
+        });
+    }
 }

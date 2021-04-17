@@ -2,8 +2,20 @@ package com.asit.hbase.service;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.ColumnFamilyDescriptor;
+import org.apache.hadoop.hbase.client.ColumnFamilyDescriptorBuilder;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.TableDescriptor;
+import org.apache.hadoop.hbase.client.TableDescriptorBuilder;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,24 +108,16 @@ public class HBaseService {
     }
 
     /**
-     * 遍历查询指定表中的所有数据
-     *
-     * @param tableName
-     * @return
-     */
-    public Map<String, Map<String, String>> getResultScanner(String tableName) {
-        Scan scan = new Scan();
-        return this.queryData(tableName, scan);
-    }
-
-    /**
      * 通过表名及过滤条件查询数据
      *
      * @param tableName
      * @param scan
      * @return
      */
-    private Map<String, Map<String, String>> queryData(String tableName, Scan scan) {
+    public Map<String, Map<String, String>> queryData(String tableName, Scan scan) {
+        if(scan==null){
+            scan = new Scan();
+        }
         // <rowKey,对应的行数据>
         Map<String, Map<String, String>> result = new HashMap<>();
         ResultScanner rs = null;
@@ -129,13 +133,17 @@ public class HBaseService {
                 // 行键，列族和列限定符一起确定一个单元（Cell）
                 for (Cell cell : r.listCells()) {
                     if (rowKey == null) {
-                        rowKey = Bytes.toString(cell.getRowArray(), cell.getRowOffset(), cell.getRowLength());
+                        rowKey = Bytes.toString(CellUtil.cloneRow(cell));
+                        //rowKey = Bytes.toString(cell.getRowArray(), cell.getRowOffset(), cell.getRowLength());
                     }
                     columnMap.put(
-                            //列限定符
-                            Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength()),
-                            //列族
-                            Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength()));
+                            //列族+列名
+                            Bytes.toString(CellUtil.cloneFamily(cell))+":"+Bytes.toString(CellUtil.cloneQualifier(cell)),
+                            //Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength()),
+                            //值
+                            Bytes.toString(CellUtil.cloneValue(cell))
+                            //Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength())
+                    );
                 }
                 if (rowKey != null) {
                     result.put(rowKey, columnMap);
